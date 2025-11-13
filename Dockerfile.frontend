@@ -79,7 +79,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y git
 
 # Clone frontend repo
-RUN git clone https://github.com/KadaliThanojKumar/DigitalWallet_FE.git .
+RUN git clone https://github.com/KadaliThanojKumar/Digital_wallet_fe.git .
 
 # Install dependencies and build
 RUN npm install --legacy-peer-deps
@@ -91,6 +91,10 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Copy build output
 COPY --from=build-stage /app/dist /usr/local/tomcat/webapps/ROOT
+
+# Add SPA routing fix
+RUN mkdir -p /usr/local/tomcat/webapps/ROOT/WEB-INF
+COPY web.xml /usr/local/tomcat/webapps/ROOT/WEB-INF/web.xml
 
 EXPOSE 8080
 CMD ["catalina.sh", "run"]

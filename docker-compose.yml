@@ -185,6 +185,69 @@
 #     driver: bridge
 
 
+# version: "3.9"
+
+# services:
+#   db:
+#     image: mysql:8.0
+#     container_name: digitalwallet-db
+#     restart: always
+#     environment:
+#       MYSQL_DATABASE: digital_wallet
+#       MYSQL_ROOT_PASSWORD: 905980
+#     ports:
+#       - "3307:3306"       # Host 3307 → Container 3306
+#     volumes:
+#       - db_data:/var/lib/mysql
+#     networks:
+#       - digitalwallet-net
+#     healthcheck:
+#       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p905980"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+
+#   backend:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.backend
+#     container_name: digitalwallet-backend
+#     restart: always
+#     environment:
+#       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/digital_wallet
+#       SPRING_DATASOURCE_USERNAME: root
+#       SPRING_DATASOURCE_PASSWORD: 905980
+#       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#     ports:
+#       - "8088:8080"       # Host 8088 → Container 8080
+#     networks:
+#       - digitalwallet-net
+
+#   frontend:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.frontend
+#     container_name: digitalwallet-frontend
+#     restart: always
+#     depends_on:
+#       - backend
+#     environment:
+#       REACT_APP_API_URL: http://backend:8080
+#     ports:
+#       - "8089:8080"       # Host 8089 → Container 8080
+#     networks:
+#       - digitalwallet-net
+
+# volumes:
+#   db_data:
+
+# networks:
+#   digitalwallet-net:
+#     driver: bridge
+
 version: "3.9"
 
 services:
@@ -196,13 +259,13 @@ services:
       MYSQL_DATABASE: digital_wallet
       MYSQL_ROOT_PASSWORD: 905980
     ports:
-      - "3307:3306"       # Host 3307 → Container 3306
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
     networks:
       - digitalwallet-net
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p905980"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "db", "-uroot", "-p905980"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -214,15 +277,15 @@ services:
     container_name: digitalwallet-backend
     restart: always
     environment:
+      SPRING_PROFILES_ACTIVE: docker   # IMPORTANT!
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/digital_wallet
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 905980
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - "8088:8080"       # Host 8088 → Container 8080
+      - "8088:8080"
     networks:
       - digitalwallet-net
 
@@ -237,7 +300,7 @@ services:
     environment:
       REACT_APP_API_URL: http://backend:8080
     ports:
-      - "8089:8080"       # Host 8089 → Container 8080
+      - "8089:8080"
     networks:
       - digitalwallet-net
 
