@@ -106,7 +106,9 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y git
 
 # Clone backend repo
-RUN git clone RUN git clone https://github.com/KadaliThanojKumar/Backend-dw.git .
+#RUN git clone RUN git clone https://github.com/KadaliThanojKumar/Backend-dw.git .
+RUN git clone https://github.com/KadaliThanojKumar/Backend-dw.git .
+
 
 # Build WAR
 RUN mvn clean package -DskipTests
